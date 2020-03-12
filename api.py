@@ -1,14 +1,15 @@
 import urllib.request
 import json
 
-api_key="3de2caa5b3b3dc2a07650bbf658738c7"
+api_key= "3de2caa5b3b3dc2a07650bbf658738c7"
 
 #need to grab it from user's data and going to be make it dynamic variables
 #put artist name and track title.
-#if they have space between their name or trackTitle, then put & instaed of space
-#for example justin%20bieber
-artist_input = "post%20malone"
-trackTitle_input = "circles"
+
+#if they have space between their name or trackTitle, then put %20 instaed of space
+#for example "post%20malone"
+artist_input = "justin%20bieber"
+trackTitle_input = "baby"
 
 #gettrack Info
 url = "http://ws.audioscrobbler.com/2.0/?method=track.getInfo&api_key="+api_key+"&artist="+ artist_input +"&track="+trackTitle_input+"&format=json"
@@ -20,6 +21,12 @@ if 'mbid' in data['track']:
     track_ID = data['track']['mbid']
 else:
     track_ID = "null"
+
+tag0=data['track']['toptags']['tag'][0]['name']
+tag1=data['track']['toptags']['tag'][1]['name']
+tag2=data['track']['toptags']['tag'][2]['name']
+tag3=data['track']['toptags']['tag'][3]['name']
+tag4=data['track']['toptags']['tag'][4]['name']
 
 album_title = data['track']['album']['title']
 if 'mbid' in data['track']['album']:
@@ -39,11 +46,16 @@ else:
     artist_ID = "null"
 
 #print out the data that I grabbed
+#into the track Table
 print('trackTitle: ' + track_title)
 print('trackID: ' + track_ID)
 print('artist: ' + artist_name)
 print('artistID: ' + artist_ID)
-print('album: ' +album_title)
+print('album: ' + album_title)
 print('album: ' + album_ID)
 
-#going to put those into the database
+#into the tag table
+print(tag0 + ",  " + tag1 + ",  " + tag2 + ",  " + tag3 + ",  " + tag4)
+
+
+#going to put those into the database later

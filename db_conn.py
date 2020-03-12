@@ -4,7 +4,7 @@ from mysql.connector import errorcode
 try:
   cnx = mysql.connector.connect(user='root', password='Capstone2!',
                                  host='ec2-18-221-117-35.us-east-2.compute.amazonaws.com',
-                                 database='test')
+                                 database='db')
 
 except mysql.connector.Error as err:
     if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:

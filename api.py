@@ -77,5 +77,8 @@ val = (track_title, track_ID, artist_name, artist_ID, album_title, album_ID)
 sql2 = "INSERT INTO tag (tag1, tag2, tag3, tag4, tag5) VALUES (%s, %s, %s, %s, %s)"
 val2 = (tag0, tag1, tag2, tag3, tag4)
 
+cursor.execute(sql2,val2)
 cursor.execute(sql,val)
-#cursor.execute(sql2,val2)
+
+cnx.commit()
+cnx.close()

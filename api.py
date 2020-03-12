@@ -1,5 +1,9 @@
 import urllib.request
 import json
+import db_conn
+from db_conn import cnx
+
+cursor = cnx.cursor()
 
 api_key= "3de2caa5b3b3dc2a07650bbf658738c7"
 
@@ -22,17 +26,26 @@ if 'mbid' in data['track']:
 else:
     track_ID = "null"
 
-tag0=data['track']['toptags']['tag'][0]['name']
-tag1=data['track']['toptags']['tag'][1]['name']
-tag2=data['track']['toptags']['tag'][2]['name']
-tag3=data['track']['toptags']['tag'][3]['name']
-tag4=data['track']['toptags']['tag'][4]['name']
+if not data['track']['toptags']['tag'] :
+    tag0 = 'null';
+    tag1 = 'null';
+    tag2 = 'null';
+    tag3 = 'null';
+    tag4 = 'null';
+else:
+    tag0=data['track']['toptags']['tag'][0]['name']
+    tag1=data['track']['toptags']['tag'][1]['name']
+    tag2=data['track']['toptags']['tag'][2]['name']
+    tag3=data['track']['toptags']['tag'][3]['name']
+    tag4=data['track']['toptags']['tag'][4]['name']
 
-album_title = data['track']['album']['title']
-if 'mbid' in data['track']['album']:
+if 'album' in data['track']:
     album_ID = data['track']['album']['mbid']
+    album_title = data['track']['album']['title']
 else:
     album_ID = "null"
+    album_title = "null"
+
 
 #getArtist Info
 url_for_artist = "http://ws.audioscrobbler.com/2.0/?method=artist.getinfo&artist="+artist_input+"&api_key="+api_key+"&format=json"
@@ -54,8 +67,15 @@ print('artistID: ' + artist_ID)
 print('album: ' + album_title)
 print('album: ' + album_ID)
 
-#into the tag table
+
 print(tag0 + ",  " + tag1 + ",  " + tag2 + ",  " + tag3 + ",  " + tag4)
 
-
 #going to put those into the database later
+sql = "INSERT INTO track (title, titlembid, artist, artistmbid, album, albummbid) VALUES (%s, %s, %s, %s, %s, %s)"
+val = (track_title, track_ID, artist_name, artist_ID, album_title, album_ID)
+
+sql2 = "INSERT INTO tag (tag1, tag2, tag3, tag4, tag5) VALUES (%s, %s, %s, %s, %s)"
+val2 = (tag0, tag1, tag2, tag3, tag4)
+
+cursor.execute(sql,val)
+#cursor.execute(sql2,val2)

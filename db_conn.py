@@ -13,6 +13,7 @@ except mysql.connector.Error as err:
         print("Database does not exist")
     else:
         print(err)
+
 else:
     print("Success")
-    cnx.close()
+    #cnx.close()

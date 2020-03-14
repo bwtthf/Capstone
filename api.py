@@ -12,8 +12,8 @@ api_key= "3de2caa5b3b3dc2a07650bbf658738c7"
 
 #if they have space between their name or trackTitle, then put %20 instaed of space
 #for example "post%20malone"
-artist_input = "justin%20bieber"
-trackTitle_input = "baby"
+artist_input = "maroon%205"
+trackTitle_input = "memories"
 
 #gettrack Info
 url = "http://ws.audioscrobbler.com/2.0/?method=track.getInfo&api_key="+api_key+"&artist="+ artist_input +"&track="+trackTitle_input+"&format=json"

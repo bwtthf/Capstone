@@ -39,12 +39,16 @@ else:
     tag3=data['track']['toptags']['tag'][3]['name']
     tag4=data['track']['toptags']['tag'][4]['name']
 
-if 'album' in data['track']:
-    album_ID = data['track']['album']['mbid']
+if 'title' in data['track']['album']:
     album_title = data['track']['album']['title']
 else:
-    album_ID = "null"
     album_title = "null"
+
+if 'mbid' in data['track']['album']:
+    album_ID = data['track']['album']['mbid']
+else:
+    album_ID = "null"
+
 
 
 #getArtist Info

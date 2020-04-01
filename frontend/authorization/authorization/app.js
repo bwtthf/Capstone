@@ -7,6 +7,17 @@ var client_id = '99e2a0362ad04328892069150d2861ff';
 var client_secret = '4fecda836b3d409a941ba264d51c3e32'; 
 var redirect_uri = 'http://localhost:8888/callback'; 
 
+//mysql connection
+var mysql = require('mysql');
+var pool = mysql.createPool({
+  connectionLimit: 10,
+  host: 'ec2-18-216-195-64.us-east-2.compute.amazonaws.com',
+  user: 'root',
+  password: 'Capstone2!',
+  database: 'spotify'
+});
+
+
 /**
  * Generates a random string containing numbers and letters
  * @param  {number} length The length of the string
@@ -79,7 +90,8 @@ app.get('/callback', function(req, res) {
       if (!error && response.statusCode === 200) {
 
         var access_token = body.access_token,
-            refresh_token = body.refresh_token;
+            refresh_token = body.refresh_token,
+            userID = 0;
 
         var options = {
           url: 'https://api.spotify.com/v1/me',
@@ -90,14 +102,58 @@ app.get('/callback', function(req, res) {
         // use the access token to access the Spotify Web API
         request.get(options, function(error, response, body) {
           console.log(body);
+          userID = body.id;
         });
-
+        
         // we can also pass the token to the browser to make requests from there
         res.redirect('http://localhost:8100/#' +
           querystring.stringify({
             access_token: access_token,
             refresh_token: refresh_token
           }));
+        
+        
+        //wait 200ms for api results
+        setTimeout(() => {
+          //connection to mysql
+          pool.getConnection(function(error, connection){
+            if(error) throw error; //not connected
+            console.log('New Connection');
+            //console.log(userID);
+            //check if user is already there, if so replace tokens, else make a new user
+            connection.query('SELECT userID FROM user WHERE userID = ?', [userID], function(error,rows){
+            //connection.query('SELECT userID FROM user', function(error, rows){
+              if(error) throw error;
+              console.log(rows)
+              //if user does not exist
+              if(!rows.length){
+                var sql = "INSERT INTO user (userID, accessToken, refreshToken) VALUES ('"+userID+"', '"+access_token+"', '"+refresh_token+"')";
+                connection.query(sql, function(error, results, fields){
+                if(error) throw error;
+                //else we log success
+                //connection.destroy()
+                console.log('New User Success');
+                });
+              }
+              //if user does exist
+              else{
+                var updateAccess = "UPDATE user SET accessToken = ? WHERE userID = ?"
+                connection.query(updateAccess, [access_token, userID], function(error){
+                  if(error) throw error;
+                  console.log('Updated user ' + userID + '\'s access token');
+                });
+                var updateRefresh = "UPDATE user SET refreshToken = ? WHERE userID = ?"
+                connection.query(updateRefresh, [refresh_token, userID], function(error){
+                  if(error) throw error;
+                  console.log('Updated user ' + userID + '\'s refresh token');
+                });
+                //connection.destroy()
+              }
+            });
+            connection.release()
+            console.log('Released connection')
+          })
+        }, 200);
       } else {
         res.redirect('/#' +
           querystring.stringify({

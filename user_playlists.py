@@ -19,10 +19,10 @@ if __name__ == '__main__':
         print("Whoops, need your username!")
         print("usage: python user_playlists.py [username]")
         sys.exit()
-    
+
     # below line provides access token using authorization code flow, but hopefully we can repurpose (with correct scope) from iOS end
     token = util.prompt_for_user_token(username)
-    
+
     if token:
         sp = spotipy.Spotify(auth=token)
         playlists = sp.user_playlists(username)

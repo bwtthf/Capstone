@@ -3,15 +3,15 @@ var request = require('request'); // "Request" library
 var querystring = require('querystring');
 var cookieParser = require('cookie-parser');
 
-var client_id = '99e2a0362ad04328892069150d2861ff'; 
-var client_secret = '4fecda836b3d409a941ba264d51c3e32'; 
-var redirect_uri = 'http://localhost:8888/callback'; 
+var client_id = '99e2a0362ad04328892069150d2861ff';
+var client_secret = '4fecda836b3d409a941ba264d51c3e32';
+var redirect_uri = 'http://localhost:8888/callback';
 
 //mysql connection
 var mysql = require('mysql');
 var pool = mysql.createPool({
   connectionLimit: 10,
-  host: 'ec2-18-216-195-64.us-east-2.compute.amazonaws.com',
+  host: 'ec2-13-59-42-62.us-east-2.compute.amazonaws.com',
   user: 'root',
   password: 'Capstone2!',
   database: 'spotify'
@@ -104,15 +104,15 @@ app.get('/callback', function(req, res) {
           console.log(body);
           userID = body.id;
         });
-        
+
         // we can also pass the token to the browser to make requests from there
         res.redirect('http://localhost:8100/#' +
           querystring.stringify({
             access_token: access_token,
             refresh_token: refresh_token
           }));
-        
-        
+
+
         //wait 200ms for api results
         setTimeout(() => {
           //connection to mysql

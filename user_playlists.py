@@ -6,15 +6,17 @@ import spotipy.util as util
 import json
 import db_conn
 from db_conn import cnx
+import mysql.connector
 
-#vr7wzjpfxp2bdgsbd63ewwaub
+
 def show_tracks(tracks,sp1):
     for i, item in enumerate(tracks['items']):
         track = item['track']
         artist = track['artists'][0]['name']
         trackTitle = track['name']
         searchResult = sp1.search(q='track:' + trackTitle, type='track', limit=50)
-        print()
+        searchResultArtist = sp1.search(artist,1,0, type="artist")
+
         added = 0
         for i in range(0,len(searchResult['tracks']['items'])):
             for y in range(0,len(searchResult['tracks']['items'][i]['album']['artists'])):
@@ -43,8 +45,29 @@ def show_tracks(tracks,sp1):
                         #track id
                         track_ID = searchResult['tracks']['items'][i]['id']
                         print(track_ID)
+                        sql = "INSERT IGNORE INTO track (title, titlembid, artist, artistmbid, album, albummbid) VALUES (%s, %s, %s, %s, %s, %s)"
+                        val = (track_title, track_ID, artist_name, artist_ID, album_title, album_ID)
+                        cursor = cnx.cursor()
+                        try:
+                            cursor.execute(sql,val)
+                        except mysql.connector.errors.IntegrityError:
+                            print('duplicate error')
+                        cnx.commit()
+                        added = 1
+                        print()
 
-                        added = 1;
+        genres = searchResultArtist['artists']['items'][0]['genres']
+        print(len(genres))
+        for i in range(len(genres),6):
+            genres.append("Null")
+        sql = "INSERT IGNORE INTO tag (artist, artistID, tag1, tag2, tag3, tag4, tag5, tag6) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
+        val = (artist, artist_ID, genres[0], genres[1], genres[2], genres[3],genres[4],genres[5])
+        cursor = cnx.cursor()
+        cursor.execute(sql,val)
+        cnx.commit()
+
+
+
 
 if __name__ == '__main__':
     if len(sys.argv) > 1:

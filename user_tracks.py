@@ -6,7 +6,8 @@ import json
 import db_conn
 from db_conn import cnx
 
-username = "vr7wzjpfxp2bdgsbd63ewwaub"
+#need to put username on here
+username = ""
 scope = 'user-library-read'
 
 token = util.prompt_for_user_token(username, scope)

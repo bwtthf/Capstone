@@ -15,22 +15,36 @@ def show_tracks(tracks,sp1):
         trackTitle = track['name']
         searchResult = sp1.search(q='track:' + trackTitle, type='track', limit=50)
         print()
+        added = 0
         for i in range(0,len(searchResult['tracks']['items'])):
             for y in range(0,len(searchResult['tracks']['items'][i]['album']['artists'])):
-                if searchResult['tracks']['items'][i]['album']['artists'][y]['name'] == artist:
-                    #artist mbid
-                    print(searchResult['tracks']['items'][i]['album']['artists'][y]['id'])
-                    #artist name
-                    print(searchResult['tracks']['items'][i]['album']['artists'][y]['name'])
-                    #album name
-                    print(searchResult['tracks']['items'][i]['album']['name'])
-                    #album uri need to use greb later
-                    print(searchResult['tracks']['items'][i]['album']['uri'])
-                    #track name
-                    print(searchResult['tracks']['items'][i]['name'])
-                    #track id
-                    print(searchResult['tracks']['items'][i]['id'])
-                    print()
+                if added == 0:
+                    if searchResult['tracks']['items'][i]['album']['artists'][y]['name'] == artist:
+                        #artist mbid
+                        artist_ID = searchResult['tracks']['items'][i]['album']['artists'][y]['id']
+                        print(artist_ID)
+
+                        #artist name
+                        artist_name = searchResult['tracks']['items'][i]['album']['artists'][y]['name']
+                        print(artist_name)
+
+                        #album name
+                        album_title = searchResult['tracks']['items'][i]['album']['name']
+                        print(album_title)
+
+                        #album uri need to use greb later
+                        album_ID = searchResult['tracks']['items'][i]['album']['uri'].split(':')[2]
+                        print(album_ID)
+
+                        #track name
+                        track_title = searchResult['tracks']['items'][i]['name']
+                        print(track_title)
+
+                        #track id
+                        track_ID = searchResult['tracks']['items'][i]['id']
+                        print(track_ID)
+
+                        added = 1;
 
 if __name__ == '__main__':
     if len(sys.argv) > 1:

@@ -73,3 +73,7 @@ if __name__ == '__main__':
                     show_tracks(tracks,sp)
     else:
         print("Can't get token for", username)
+
+cnx.close()
+print()
+print("successfully closed a database")

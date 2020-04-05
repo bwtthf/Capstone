@@ -78,5 +78,6 @@ if token:
 else:
     print("Can't get token for", username)
 
-print("success")
 cnx.close()
+print()
+print("successfully closed a database")

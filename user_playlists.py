@@ -14,13 +14,19 @@ def show_tracks(tracks,sp1):
         track = item['track']
         artist = track['artists'][0]['name']
         trackTitle = track['name']
+
+        #search Result is for grabbing the data.
         searchResult = sp1.search(q='track:' + trackTitle, type='track', limit=50)
         searchResultArtist = sp1.search(artist,1,0, type="artist")
 
-        added = 0
+        added = 0 # is for duplicate datas
+
+        #Open the Search results by track names
         for i in range(0,len(searchResult['tracks']['items'])):
             for y in range(0,len(searchResult['tracks']['items'][i]['album']['artists'])):
+                #not added then add the datas
                 if added == 0:
+                    #if it matches with artist name
                     if searchResult['tracks']['items'][i]['album']['artists'][y]['name'] == artist:
                         #artist mbid
                         artist_ID = searchResult['tracks']['items'][i]['album']['artists'][y]['id']
@@ -56,8 +62,9 @@ def show_tracks(tracks,sp1):
                         added = 1
                         print()
 
+        #take the genre datas from the artists search.
         genres = searchResultArtist['artists']['items'][0]['genres']
-        print(len(genres))
+        #print(len(genres))
         for i in range(len(genres),6):
             genres.append("Null")
         sql = "INSERT IGNORE INTO tag (artist, artistID, tag1, tag2, tag3, tag4, tag5, tag6) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
@@ -65,8 +72,6 @@ def show_tracks(tracks,sp1):
         cursor = cnx.cursor()
         cursor.execute(sql,val)
         cnx.commit()
-
-
 
 
 if __name__ == '__main__':

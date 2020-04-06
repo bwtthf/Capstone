@@ -15,6 +15,7 @@ token1 = util.prompt_for_user_token(username)
 
 if token:
     sp = spotipy.Spotify(auth=token)
+    #open another one for searching the tracks
     sp1 = spotipy.Spotify(auth=token1)
     results = sp.current_user_saved_tracks()
     if not results:
@@ -28,6 +29,7 @@ if token:
             searchResult = sp1.search(q='track:'+trackTitle, type='track', limit=50)
             searchResultArtist = sp1.search(artist,1,0, type="artist")
 
+            #prevent for duplicate data. it will store only 1 data
             added = 0
             for i in range(0,len(searchResult['tracks']['items'])):
                 for y in range(0,len(searchResult['tracks']['items'][i]['album']['artists'])):
@@ -56,6 +58,8 @@ if token:
                             #track id
                             track_ID = searchResult['tracks']['items'][i]['id']
                             print(track_ID)
+
+                            #insert into the database
                             sql = "INSERT IGNORE INTO track (title, titlembid, artist, artistmbid, album, albummbid) VALUES (%s, %s, %s, %s, %s, %s)"
                             val = (track_title, track_ID, artist_name, artist_ID, album_title, album_ID)
                             cursor = cnx.cursor()
@@ -64,6 +68,7 @@ if token:
                             added = 1;
                             print()
 
+                            #insert into the database for artist genre
                             genres = searchResultArtist['artists']['items'][0]['genres']
                             print(len(genres))
                             for i in range(len(genres),6):

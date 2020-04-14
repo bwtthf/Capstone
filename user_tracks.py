@@ -7,7 +7,7 @@ import db_conn
 from db_conn import cnx
 
 #need to put username on here
-username = ""
+username = "vr7wzjpfxp2bdgsbd63ewwaub"
 scope = 'user-library-read'
 
 token = util.prompt_for_user_token(username, scope)
@@ -70,7 +70,7 @@ if token:
 
                             #insert into the database for artist genre
                             genres = searchResultArtist['artists']['items'][0]['genres']
-                            print(len(genres))
+                            #print(len(genres))
                             for i in range(len(genres),6):
                                 genres.append("Null")
                             sql = "INSERT IGNORE INTO tag (artist, artistID, tag1, tag2, tag3, tag4, tag5, tag6) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"

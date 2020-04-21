@@ -4,15 +4,17 @@ import sys
 import json
 import spotipy
 import spotipy.util as util
-import db_conn
+#import db_conn
 from db_conn import cnx
 
-cursor = cnx.cursor()
+topFive = {}
+artist_ids = []
+genres = {}
 
+cursor = cnx.cursor(buffered=True)
 sql = 'SELECT userID, accessToken FROM user WHERE updated = "0"'
 cursor.execute(sql)
 
-topFive = {}
 
 for (userID, accessToken) in cursor:
     if accessToken:
@@ -23,29 +25,64 @@ for (userID, accessToken) in cursor:
         print(userID + ':')
         for range in ranges:
             print("range:", range)
-            results = sp.current_user_top_tracks(time_range=range, limit=5)
-            for i, item in enumerate(results['items']):
+            # get top five tracks for the current user
+            top_five_results = sp.current_user_top_tracks(time_range=range, limit=5)
+            for i, item in enumerate(top_five_results['items']):
                 #print(i, item['name'], '//', item['artists'][0]['name'])
                 topFive[item['name']] = item['artists'][0]['name']
+
+            # get top 50 tracks and their artist ids
+            results = sp.current_user_top_tracks(time_range=range, limit = 50)
+            for i, item in enumerate(results['items']):
+                artist_ids.append(item['artists'][0]['id'])
             print()
-        print(topFive)
-        jsonFive = json.dumps(topFive) 
+        # get the genres of each of the user's top 50 artists
+        artists = sp.artists(artist_ids)
+        for i, item in enumerate(artists['artists']):
+            genres[item['name']] = item['genres']
+
+        # update current user's top five tracks
         sql = 'UPDATE user SET topFive = %s WHERE userID = %s'
         values = (json.dumps(topFive), userID)
         cursor.execute(sql, values)
-        sql = 'SELECT topFive FROM user WHERE userID = %s'
-        cursor = cnx.cursor(dictionary=True)
+        cnx.commit()
+        
+        # update current user's top 50 genres
+        sql = 'UPDATE user SET genres = %s WHERE userID = %s'
+        values = (json.dumps(genres), userID)
+        cursor.execute(sql, values)
+        cnx.commit()
+
+        # retrieve current user's top 50 genres
+        #sql = 'SELECT genres FROM user WHERE userID = %s'
+        #cursor = cnx.cursor(dictionary=True)
+        #cursor.execute(sql, (userID,))
+        #for genres in cursor:
+        #    genres = genres['genres']
+        #    genres = json.loads(genres)
+            
+        
+        
+        # retrieve top five tracks
+        #sql = 'SELECT topFive FROM user WHERE userID = %s'
+        #cursor = cnx.cursor(dictionary=True)
+        #cursor.execute(sql, (userID,))
+        #for topFive in cursor:
+        #    topFive = topFive['topFive']
+        #    topFive = json.loads(topFive)
+        #    
+        #    #get back to original mapping/order
+        #    original_five = dict()
+        #    for key, value in topFive.items():
+        #        original_five.setdefault(value, list()).append(key) 
+        #    print(original_five)
+        
+        # set updated value to 1 to signal that user is fully updated
+        sql = 'UPDATE user SET updated = "1" WHERE userID = %s'
+        cursor = cnx.cursor()
         cursor.execute(sql, (userID,))
-        for topFive in cursor:
-            #print(topFive)
-            topFive = topFive['topFive']
-            topFive = json.loads(topFive)
-            
-            #get back to original mapping/order
-            original_five = dict()
-            for key, value in topFive.items():
-                original_five.setdefault(value, list()).append(key) 
-            print(original_five)
-            
+        cnx.commit()
+        print(f'user {userID} updated value is now 1')
+        
     else:
         print("Can't get token for", userID)

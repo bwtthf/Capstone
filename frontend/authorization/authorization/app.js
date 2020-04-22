@@ -5,7 +5,7 @@ var cookieParser = require('cookie-parser');
 
 var client_id = '99e2a0362ad04328892069150d2861ff'; 
 var client_secret = '4fecda836b3d409a941ba264d51c3e32'; 
-var redirect_uri = 'http://localhost:8888/callback'; 
+var redirect_uri = 'http://ec2-13-59-42-62.us-east-2.compute.amazonaws.com:8888/callback'; 
 
 //mysql connection
 var mysql = require('mysql');
@@ -16,7 +16,7 @@ var pool = mysql.createPool({
   password: 'Capstone2!',
   database: 'spotify'
 });
-
+console.log('DB connected');
 
 /**
  * Generates a random string containing numbers and letters
@@ -106,7 +106,7 @@ app.get('/callback', function(req, res) {
         });
         
         // we can also pass the token to the browser to make requests from there
-        res.redirect('http://localhost:8100/navigation/'); //+
+        res.redirect('http://ec2-13-59-42-62.us-east-2.compute.amazonaws.com:8100/navigation/'); //+
         //  querystring.stringify({
         //    access_token: access_token,
         //    refresh_token: refresh_token

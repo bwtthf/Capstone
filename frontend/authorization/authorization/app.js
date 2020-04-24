@@ -2,6 +2,7 @@ var express = require('express'); // Express web server framework
 var request = require('request'); // "Request" library
 var querystring = require('querystring');
 var cookieParser = require('cookie-parser');
+const {spawn} = require('child_process')
 
 var client_id = '99e2a0362ad04328892069150d2861ff'; 
 var client_secret = '4fecda836b3d409a941ba264d51c3e32'; 
@@ -153,6 +154,23 @@ app.get('/callback', function(req, res) {
             console.log('Released connection')
           })
         }, 200);
+        //var currentPath = process.cwd()
+        var path = require('path')
+        const logOutput = (name) => (data) => console.log(`[${name}] ${data.toString()}`)
+        //console.log(path)
+        setTimeout(() => {
+          const tracks = spawn('python', [path.join(__dirname, '../../../src/top_tracks.py')]);
+          tracks.stdout.on('data', logOutput('stdout'));
+          tracks.stderr.on('data', logOutput('stderr'));
+        }, 200);
+        setTimeout(() => {
+          const matches = spawn('python', [path.join(__dirname, '../../../src/get_matches.py')]);
+          matches.stdout.on('data', logOutput('stdout'));
+          matches.stderr.on('data', logOutput('stderr'));
+        }, 3000);
+        //const process = spawn('python', ['test.py'])
+        
+
       } else {
         res.redirect('/#' +
           querystring.stringify({

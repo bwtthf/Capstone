@@ -29,7 +29,7 @@ for (userID, accessToken) in cursor:
             top_five_results = sp.current_user_top_tracks(time_range=range, limit=5)
             for i, item in enumerate(top_five_results['items']):
                 #print(i, item['name'], '//', item['artists'][0]['name'])
-                topFive[item['name']] = item['artists'][0]['name']
+                topFive[item['artists'][0]['name']] = item['name']
 
             # get top 50 tracks and their artist ids
             results = sp.current_user_top_tracks(time_range=range, limit = 50)
@@ -40,7 +40,7 @@ for (userID, accessToken) in cursor:
         artists = sp.artists(artist_ids)
         for i, item in enumerate(artists['artists']):
             genres[item['name']] = item['genres']
-
+        
         # update current user's top five tracks
         sql = 'UPDATE user SET topFive = %s WHERE userID = %s'
         values = (json.dumps(topFive), userID)

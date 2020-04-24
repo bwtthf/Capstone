@@ -65,9 +65,13 @@ while True:
         if tup[0] > 0 or tup[1] > 5:
             user_matches.append(tup[2])
     # update mysql db with list of matches
-    sql = 'UPDATE user SET matches = %s WHERE userID = %s'
-    cursor.execute(sql, (json.dumps(user_matches), userIDs[0]))
+    sql = 'UPDATE user SET matches = COALESCE(JSON_MERGE_PRESERVE(%s, JSON_SET(matches, "$", %s)), JSON_ARRAY("[]")) WHERE userID = %s'
+    cursor.execute(sql, (json.dumps(userIDs[0]), json.dumps(user_matches), userIDs[0]))
     cnx.commit()
+    for user in user_matches:
+        sql = 'UPDATE user SET matches = COALESCE(JSON_MERGE_PRESERVE(%s, JSON_SET(matches, "$", %s)), JSON_ARRAY("[]")) WHERE userID = %s'
+        cursor.execute(sql, (json.dumps(user), json.dumps(userIDs[0]), user))
+        cnx.commit()
     userIDs.clear()
     matches.clear()
     dicts.clear()

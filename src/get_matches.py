@@ -6,10 +6,11 @@ matches = []
 user_matches = []
 userIDs = []
 
+cursor = cnx.cursor(buffered=True)
+sql = 'UPDATE user SET updated = IF(updated = "2", "1", updated)'
+cursor.execute(sql)
+
 while True:
-    cursor = cnx.cursor(buffered=True)
-    sql = 'UPDATE user SET updated = "1"'
-    cursor.execute(sql)
     sql = 'SELECT userID FROM user WHERE updated = "1"'
     cursor.execute(sql)
     users = 0

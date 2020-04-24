@@ -10,7 +10,7 @@ from db_conn import cnx
 topFive = {}
 artist_ids = []
 genres = {}
-
+recommendations = {}
 cursor = cnx.cursor(buffered=True)
 sql = 'SELECT userID, accessToken FROM user WHERE updated = "0"'
 cursor.execute(sql)
@@ -52,6 +52,15 @@ for (userID, accessToken) in cursor:
         values = (json.dumps(genres), userID)
         cursor.execute(sql, values)
         cnx.commit()
+
+        # get recommendations based on user's top 50 artists and update db
+        rec = sp.recommendations(limit=5, seed_artists=artist_ids[0:5])
+        for i, item in enumerate(rec['tracks']):
+            recommendations[item['artists'][0]['name']] = item['name']
+        print(recommendations)
+        sql = 'UPDATE user SET recommendations = %s WHERE userID = %s'
+        cursor.execute(sql, (json.dumps(recommendations), userID))
+
 
         # retrieve current user's top 50 genres
         #sql = 'SELECT genres FROM user WHERE userID = %s'

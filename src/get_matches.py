@@ -8,6 +8,8 @@ userIDs = []
 
 while True:
     cursor = cnx.cursor(buffered=True)
+    sql = 'UPDATE user SET updated = "1"'
+    cursor.execute(sql)
     sql = 'SELECT userID FROM user WHERE updated = "1"'
     cursor.execute(sql)
     users = 0

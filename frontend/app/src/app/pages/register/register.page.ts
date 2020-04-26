@@ -47,6 +47,7 @@ export class RegisterPage implements OnInit {
 			this.router.navigate(['/home'])
     }
     catch{
+      this.presentAlert("Error!", "Passwords need to be at least 6 characters long")
       console.dir(Error)
     }
   }

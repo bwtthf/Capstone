@@ -126,8 +126,11 @@ app.get('/callback', function(req, res) {
               if(error) throw error;
               //if user does not exist
               var updated = 0
+              var matches = {}
+              matches[userID] = []
+              console.log(matches)
               if(!rows.length){
-                var sql = "INSERT INTO user (userID, accessToken, refreshToken, updated) VALUES ('"+userID+"', '"+access_token+"', '"+refresh_token+"', '"+updated+"')";
+                var sql = "INSERT INTO user (userID, accessToken, refreshToken, updated, matches) VALUES ('"+userID+"', '"+access_token+"', '"+refresh_token+"', '"+updated+"', '"+JSON.stringify(matches)+"')";
                 connection.query(sql, function(error, results, fields){
                 if(error) throw error;
                 //else we log success

@@ -2,6 +2,7 @@ var express = require('express'); // Express web server framework
 var request = require('request'); // "Request" library
 var querystring = require('querystring');
 var cookieParser = require('cookie-parser');
+const {spawn} = require('child_process')
 
 var client_id = '99e2a0362ad04328892069150d2861ff'; 
 var client_secret = '4fecda836b3d409a941ba264d51c3e32'; 
@@ -11,7 +12,7 @@ var redirect_uri = 'http://localhost:8888/callback';
 var mysql = require('mysql');
 var pool = mysql.createPool({
   connectionLimit: 10,
-  host: 'ec2-18-216-195-64.us-east-2.compute.amazonaws.com',
+  host: 'ec2-13-59-42-62.us-east-2.compute.amazonaws.com',
   user: 'root',
   password: 'Capstone2!',
   database: 'spotify'
@@ -46,7 +47,7 @@ app.get('/login', function(req, res) {
   res.cookie(stateKey, state);
 
   // your application requests authorization
-  var scope = 'user-read-private user-read-email user-read-playback-state';
+  var scope = 'user-read-private user-read-email user-read-playback-state user-top-read';
   res.redirect('https://accounts.spotify.com/authorize?' +
     querystring.stringify({
       response_type: 'code',
@@ -119,15 +120,17 @@ app.get('/callback', function(req, res) {
           pool.getConnection(function(error, connection){
             if(error) throw error; //not connected
             console.log('New Connection');
-            //console.log(userID);
+            
             //check if user is already there, if so replace tokens, else make a new user
             connection.query('SELECT userID FROM user WHERE userID = ?', [userID], function(error,rows){
-            //connection.query('SELECT userID FROM user', function(error, rows){
               if(error) throw error;
-              console.log(rows)
               //if user does not exist
+              var updated = 0
+              var matches = {}
+              matches[userID] = []
+              console.log(matches)
               if(!rows.length){
-                var sql = "INSERT INTO user (userID, accessToken, refreshToken) VALUES ('"+userID+"', '"+access_token+"', '"+refresh_token+"')";
+                var sql = "INSERT INTO user (userID, accessToken, refreshToken, updated, matches) VALUES ('"+userID+"', '"+access_token+"', '"+refresh_token+"', '"+updated+"', '"+JSON.stringify(matches)+"')";
                 connection.query(sql, function(error, results, fields){
                 if(error) throw error;
                 //else we log success
@@ -137,8 +140,8 @@ app.get('/callback', function(req, res) {
               }
               //if user does exist
               else{
-                var updateAccess = "UPDATE user SET accessToken = ? WHERE userID = ?"
-                connection.query(updateAccess, [access_token, userID], function(error){
+                var updateAccess = "UPDATE user SET accessToken = ?, updated = ? WHERE userID = ?"
+                connection.query(updateAccess, [access_token, updated, userID], function(error){
                   if(error) throw error;
                   console.log('Updated user ' + userID + '\'s access token');
                 });
@@ -154,6 +157,23 @@ app.get('/callback', function(req, res) {
             console.log('Released connection')
           })
         }, 200);
+        //var currentPath = process.cwd()
+        var path = require('path')
+        const logOutput = (name) => (data) => console.log(`[${name}] ${data.toString()}`)
+        //console.log(path)
+        setTimeout(() => {
+          const tracks = spawn('python', [path.join(__dirname, '../../../src/top_tracks.py')]);
+          tracks.stdout.on('data', logOutput('stdout'));
+          tracks.stderr.on('data', logOutput('stderr'));
+        }, 200);
+        setTimeout(() => {
+          const matches = spawn('python', [path.join(__dirname, '../../../src/get_matches.py')]);
+          matches.stdout.on('data', logOutput('stdout'));
+          matches.stderr.on('data', logOutput('stderr'));
+        }, 3000);
+        //const process = spawn('python', ['test.py'])
+        
+
       } else {
         res.redirect('/#' +
           querystring.stringify({

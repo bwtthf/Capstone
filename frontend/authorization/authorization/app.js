@@ -6,7 +6,7 @@ const {spawn} = require('child_process')
 
 var client_id = '99e2a0362ad04328892069150d2861ff'; 
 var client_secret = '4fecda836b3d409a941ba264d51c3e32'; 
-var redirect_uri = 'http://localhost:8888/callback'; 
+var redirect_uri = 'http://ec2-13-59-42-62.us-east-2.compute.amazonaws.com:8888/callback'; 
 
 //mysql connection
 var mysql = require('mysql');
@@ -17,7 +17,7 @@ var pool = mysql.createPool({
   password: 'Capstone2!',
   database: 'spotify'
 });
-
+console.log('DB connected');
 
 /**
  * Generates a random string containing numbers and letters
@@ -107,7 +107,7 @@ app.get('/callback', function(req, res) {
         });
         
         // we can also pass the token to the browser to make requests from there
-        res.redirect('http://localhost:8100/navigation/'); //+
+        res.redirect('http://ec2-13-59-42-62.us-east-2.compute.amazonaws.com:8100/navigation/'); //+
         //  querystring.stringify({
         //    access_token: access_token,
         //    refresh_token: refresh_token
@@ -162,12 +162,12 @@ app.get('/callback', function(req, res) {
         const logOutput = (name) => (data) => console.log(`[${name}] ${data.toString()}`)
         //console.log(path)
         setTimeout(() => {
-          const tracks = spawn('python', [path.join(__dirname, '../../../src/top_tracks.py')]);
+          const tracks = spawn('python3', [path.join(__dirname, '../../../src/top_tracks.py')]);
           tracks.stdout.on('data', logOutput('stdout'));
           tracks.stderr.on('data', logOutput('stderr'));
         }, 200);
         setTimeout(() => {
-          const matches = spawn('python', [path.join(__dirname, '../../../src/get_matches.py')]);
+          const matches = spawn('python3', [path.join(__dirname, '../../../src/get_matches.py')]);
           matches.stdout.on('data', logOutput('stdout'));
           matches.stderr.on('data', logOutput('stderr'));
         }, 3000);

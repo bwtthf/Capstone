@@ -1,0 +1,1 @@
+screen -S ionic ionic serve --host 0.0.0.0 --port 8100 --public-host=ec2-13-59-42-62.us-east-2.compute.amazonaws.com

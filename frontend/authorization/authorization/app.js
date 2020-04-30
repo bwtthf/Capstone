@@ -92,7 +92,11 @@ app.get('/callback', function(req, res) {
 
         var access_token = body.access_token,
             refresh_token = body.refresh_token,
-            userID = 0;
+            userID = body.access_token;
+
+        var id = querystring.stringify({userID: userID},':');
+        var send = id.replace('userID=','')
+        var sentid = id.concat(send)
 
         var options = {
           url: 'https://api.spotify.com/v1/me',
@@ -104,14 +108,15 @@ app.get('/callback', function(req, res) {
         request.get(options, function(error, response, body) {
           console.log(body);
           userID = body.id;
+
         });
         
         // we can also pass the token to the browser to make requests from there
-        res.redirect('http://localhost:8100/navigation/'); //+
-        //  querystring.stringify({
-        //    access_token: access_token,
-        //    refresh_token: refresh_token
-        //  }));
+        res.redirect('http://localhost:8100/navigation/' +
+        //querystring.stringify({
+            send);
+            //refresh_token: refresh_token
+            
         
         
         //wait 200ms for api results

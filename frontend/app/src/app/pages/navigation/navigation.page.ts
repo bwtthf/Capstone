@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth'
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-navigation',
@@ -9,11 +9,15 @@ import { Router } from '@angular/router';
 })
 export class NavigationPage implements OnInit {
 
+  userid = null;
+
   constructor(public afAuth: AngularFireAuth,
-    public router: Router
-    ) { }
+    public router: Router, 
+    public activatedRoute:ActivatedRoute) { }
+
 
   ngOnInit() {
+    this.userid = this.activatedRoute.snapshot.paramMap.get('userid')
   }
 
   SignOut() {

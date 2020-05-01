@@ -11,7 +11,7 @@
 <ion-content>
 <ion-item><ion-label>{{ userid }}</ion-label></ion-item>
 <ion-button class="butt" href='http://localhost:8888/login'>Link Spotify</ion-button>
-<ion-button class="butt" routerLink="/reccomendations/">Recommended Songs</ion-button>
+<ion-button class="butt" (click)="pushRecommendations() ">Recommended Songs</ion-button>
 <ion-button class="butt" (click)='pushMatches()'>Matches</ion-button>
-<ion-button class="butt" routerLink="/message-navigation">Message Matches</ion-button>
+<ion-button class="butt" (click)="pushMessage()">Message Matches</ion-button>
 </ion-content>

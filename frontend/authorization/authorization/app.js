@@ -2,6 +2,7 @@ var express = require('express'); // Express web server framework
 var request = require('request'); // "Request" library
 var querystring = require('querystring');
 var cookieParser = require('cookie-parser');
+var async = require('async');
 const {spawn} = require('child_process')
 
 var client_id = '99e2a0362ad04328892069150d2861ff'; 
@@ -19,6 +20,7 @@ var pool = mysql.createPool({
 });
 console.log('DB connected');
 
+
 /**
  * Generates a random string containing numbers and letters
  * @param  {number} length The length of the string
@@ -35,6 +37,7 @@ var generateRandomString = function(length) {
 };
 
 var stateKey = 'spotify_auth_state';
+var userID = 0;
 
 var app = express();
 
@@ -91,12 +94,8 @@ app.get('/callback', function(req, res) {
       if (!error && response.statusCode === 200) {
 
         var access_token = body.access_token,
-            refresh_token = body.refresh_token,
-            userID = body.access_token;
+            refresh_token = body.refresh_token;
 
-        var id = querystring.stringify({userID: userID},':');
-        var send = id.replace('userID=','')
-        var sentid = id.concat(send)
 
         var options = {
           url: 'https://api.spotify.com/v1/me',
@@ -108,18 +107,16 @@ app.get('/callback', function(req, res) {
         request.get(options, function(error, response, body) {
           console.log(body);
           userID = body.id;
-
         });
         
+        // we can also pass the token to the browser to make requests from there
+        res.redirect('http://localhost:8100/navigation/'); //+
+        //  querystring.stringify({
+        //    access_token: access_token,
+        //    refresh_token: refresh_token
+        //  }));
         
-        //res.redirect('http://ec2-13-59-42-62.us-east-2.compute.amazonaws.com:8100/navigation/'
-        //+ send);
-        
-        //remember to change this back, changed it for ease of testing
 
-        res.redirect('http://localhost:8100/navigation/'
-        + send);
-        
         //wait 200ms for api results
         setTimeout(() => {
           //connection to mysql
@@ -211,6 +208,101 @@ app.get('/refresh_token', function(req, res) {
         'access_token': access_token
       });
     }
+  });
+});
+
+app.get('/matches', function(req, res){
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  pool.getConnection(function(error, connection){
+    if(error) throw error; //not connected
+    var matches = []
+    var topFive = {}
+    var alnum = /^[0-9a-zA-Z]+$/;
+
+    var sql = 'SELECT matches from user WHERE userID = ?'
+    connection.query(sql, [userID], function(error, result){
+      matches = (result[0].matches).split('"');
+      for(var i=0; i < matches.length; i++){
+        if (!matches[i].match(alnum)){
+          matches.splice(i, 1);
+        }
+      }
+      matches.splice(0, 1);
+      sql = 'SELECT topFive from user WHERE userID = ?'
+      async.forEachOf(matches, function(user, i, callback){
+        connection.query(sql, [user], function(error,result){
+          if(error) callback(error)
+          topFive[matches[i]] = result[0].topFive;
+          callback(null)
+        });
+      },
+      function(err){
+        if(err){
+          throw err;
+        }else{
+          res.json(topFive)
+        }
+    });
+      
+    });
+    
+  });
+});
+
+app.get('/recommendation', function(req, res){
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  pool.getConnection(function(error, connection){
+    if(error) throw error; //not connected
+    var matches = []
+    var recs = {}
+    var alnum = /^[0-9a-zA-Z]+$/;
+
+    var sql = 'SELECT matches from user WHERE userID = ?'
+    connection.query(sql, [userID], function(error, result){
+      matches = (result[0].matches).split('"');
+      for(var i=0; i < matches.length; i++){
+        if (!matches[i].match(alnum)){
+          matches.splice(i, 1);
+        }
+      }
+      matches.splice(0, 1);
+      sql = 'SELECT recommendations from user WHERE userID = ?'
+      async.forEachOf(matches, function(user, i, callback){
+        connection.query(sql, [user], function(error,result){
+          if(error) callback(error)
+          recs[matches[i]] = result[0].recommendations;
+          callback(null)
+        });
+      },
+      function(err){
+        if(err){
+          throw err;
+        }else{
+          res.json(recs)
+        }
+    });
+      
+    });
+    
+  });
+});
+
+app.get('/messages', function(req, res){
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  var alnum = /^[0-9a-zA-Z]+$/;
+  pool.getConnection(function(error, connection){
+    if(error) throw error; //not connected
+    var sql = 'SELECT matches from user WHERE userID = ?'
+    connection.query(sql, [userID], function(error, result){
+      matches = (result[0].matches).split('"');
+      for(var i=0; i < matches.length; i++){
+        if (!matches[i].match(alnum)){
+          matches.splice(i, 1);
+        }
+      }
+      matches.splice(0, 1);
+      res.json(matches);
+    });
   });
 });
 

@@ -5,11 +5,11 @@ const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
   { path: 'home', loadChildren: () => import('./home/home.module').then( m => m.HomePageModule)},
   {
-    path: 'navigation/:userid',
+    path: 'navigation',
     loadChildren: () => import('./pages/navigation/navigation.module').then( m => m.NavigationPageModule)
   },
   {
-    path: 'matches/:userid',
+    path: 'matches',
     loadChildren: () => import('./pages/matches/matches.module').then( m => m.MatchesPageModule)
   },
   {
@@ -21,7 +21,7 @@ const routes: Routes = [
     loadChildren: () => import('./pages/account/account.module').then( m => m.AccountPageModule)
   },
   {
-    path: 'reccomendations/:userid',
+    path: 'reccomendations',
     loadChildren: () => import('./pages/reccomendations/reccomendations.module').then( m => m.ReccomendationsPageModule)
   },
   {
@@ -33,7 +33,15 @@ const routes: Routes = [
     loadChildren: () => import('./pages/register/register.module').then( m => m.RegisterPageModule)
   },
   {
-    path: 'message-navigation/:userid',
+    path: 'login',
+    loadChildren: () => import('./pages/login/login.module').then( m => m.LoginPageModule)
+  },
+  {
+    path: 'register',
+    loadChildren: () => import('./pages/register/register.module').then( m => m.RegisterPageModule)
+  },
+  {
+    path: 'message-navigation',
     loadChildren: () => import('./pages/message-navigation/message-navigation.module').then( m => m.MessageNavigationPageModule)
   },
 ];

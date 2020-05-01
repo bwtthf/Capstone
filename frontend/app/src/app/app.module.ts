@@ -15,6 +15,7 @@ import { AngularFireAuthModule } from '@angular/fire/auth'
 import { AngularFirestoreModule } from '@angular/fire/firestore'
 
 import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
+import {HttpClientModule} from '@angular/common/http'
 const config: SocketIoConfig = { url: 'http://localhost:3001', options: {} };
 
 @NgModule({
@@ -25,7 +26,8 @@ const config: SocketIoConfig = { url: 'http://localhost:3001', options: {} };
     AppRoutingModule,AngularFireModule.initializeApp(firebaseConfig),
 	  AngularFireAuthModule,
     AngularFirestoreModule,
-    SocketIoModule.forRoot(config)
+    SocketIoModule.forRoot(config),
+    HttpClientModule
   ],
   providers: [
     StatusBar,

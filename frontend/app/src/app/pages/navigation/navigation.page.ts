@@ -26,14 +26,6 @@ export class NavigationPage implements OnInit {
     this.nav.navigateForward(`/matches/${this.userid}`)
   }
 
-  pushRecommendations() {
-    this.nav.navigateForward(`/matches/${this.userid}`)
-  }
-
-  pushMessage() {
-    this.nav.navigateForward(`/matches/${this.userid}`)
-  }
-
   SignOut() {
     this.afAuth.signOut();
     this.router.navigate(['/home'])

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-message-navigation',
@@ -8,12 +8,14 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class MessageNavigationPage implements OnInit {
 
-  userid = null;
-
-  constructor(public activatedRoute: ActivatedRoute) { }
+  constructor(private http: HttpClient) { }
 
   ngOnInit() {
-    this.userid = this.activatedRoute.snapshot.paramMap.get('userid')
+    this.http.get('http://localhost:8888/messages').subscribe(data => {
+      var alnum = /^[0-9a-zA-Z]+$/;
+      // array of matched users
+      console.log(data);
+    });
   }
 
 }

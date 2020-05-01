@@ -18,6 +18,7 @@ var pool = mysql.createPool({
   password: 'Capstone2!',
   database: 'spotify'
 });
+console.log('DB connected');
 
 
 /**
@@ -115,7 +116,7 @@ app.get('/callback', function(req, res) {
         //    refresh_token: refresh_token
         //  }));
         
-        
+
         //wait 200ms for api results
         setTimeout(() => {
           //connection to mysql
@@ -164,12 +165,12 @@ app.get('/callback', function(req, res) {
         const logOutput = (name) => (data) => console.log(`[${name}] ${data.toString()}`)
         //console.log(path)
         setTimeout(() => {
-          const tracks = spawn('python', [path.join(__dirname, '../../../src/top_tracks.py')]);
+          const tracks = spawn('python3', [path.join(__dirname, '../../../src/top_tracks.py')]);
           tracks.stdout.on('data', logOutput('stdout'));
           tracks.stderr.on('data', logOutput('stderr'));
         }, 200);
         setTimeout(() => {
-          const matches = spawn('python', [path.join(__dirname, '../../../src/get_matches.py')]);
+          const matches = spawn('python3', [path.join(__dirname, '../../../src/get_matches.py')]);
           matches.stdout.on('data', logOutput('stdout'));
           matches.stderr.on('data', logOutput('stderr'));
         }, 3000);

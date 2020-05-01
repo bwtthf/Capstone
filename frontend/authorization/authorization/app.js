@@ -2,6 +2,7 @@ var express = require('express'); // Express web server framework
 var request = require('request'); // "Request" library
 var querystring = require('querystring');
 var cookieParser = require('cookie-parser');
+var async = require('async');
 const {spawn} = require('child_process')
 
 var client_id = '99e2a0362ad04328892069150d2861ff'; 
@@ -35,6 +36,7 @@ var generateRandomString = function(length) {
 };
 
 var stateKey = 'spotify_auth_state';
+var userID = 0;
 
 var app = express();
 
@@ -91,8 +93,8 @@ app.get('/callback', function(req, res) {
       if (!error && response.statusCode === 200) {
 
         var access_token = body.access_token,
-            refresh_token = body.refresh_token,
-            userID = 0;
+            refresh_token = body.refresh_token;
+
 
         var options = {
           url: 'https://api.spotify.com/v1/me',
@@ -205,6 +207,101 @@ app.get('/refresh_token', function(req, res) {
         'access_token': access_token
       });
     }
+  });
+});
+
+app.get('/matches', function(req, res){
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  pool.getConnection(function(error, connection){
+    if(error) throw error; //not connected
+    var matches = []
+    var topFive = {}
+    var alnum = /^[0-9a-zA-Z]+$/;
+
+    var sql = 'SELECT matches from user WHERE userID = ?'
+    connection.query(sql, [userID], function(error, result){
+      matches = (result[0].matches).split('"');
+      for(var i=0; i < matches.length; i++){
+        if (!matches[i].match(alnum)){
+          matches.splice(i, 1);
+        }
+      }
+      matches.splice(0, 1);
+      sql = 'SELECT topFive from user WHERE userID = ?'
+      async.forEachOf(matches, function(user, i, callback){
+        connection.query(sql, [user], function(error,result){
+          if(error) callback(error)
+          topFive[matches[i]] = result[0].topFive;
+          callback(null)
+        });
+      },
+      function(err){
+        if(err){
+          throw err;
+        }else{
+          res.json(topFive)
+        }
+    });
+      
+    });
+    
+  });
+});
+
+app.get('/recommendation', function(req, res){
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  pool.getConnection(function(error, connection){
+    if(error) throw error; //not connected
+    var matches = []
+    var recs = {}
+    var alnum = /^[0-9a-zA-Z]+$/;
+
+    var sql = 'SELECT matches from user WHERE userID = ?'
+    connection.query(sql, [userID], function(error, result){
+      matches = (result[0].matches).split('"');
+      for(var i=0; i < matches.length; i++){
+        if (!matches[i].match(alnum)){
+          matches.splice(i, 1);
+        }
+      }
+      matches.splice(0, 1);
+      sql = 'SELECT recommendations from user WHERE userID = ?'
+      async.forEachOf(matches, function(user, i, callback){
+        connection.query(sql, [user], function(error,result){
+          if(error) callback(error)
+          recs[matches[i]] = result[0].recommendations;
+          callback(null)
+        });
+      },
+      function(err){
+        if(err){
+          throw err;
+        }else{
+          res.json(recs)
+        }
+    });
+      
+    });
+    
+  });
+});
+
+app.get('/messages', function(req, res){
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  var alnum = /^[0-9a-zA-Z]+$/;
+  pool.getConnection(function(error, connection){
+    if(error) throw error; //not connected
+    var sql = 'SELECT matches from user WHERE userID = ?'
+    connection.query(sql, [userID], function(error, result){
+      matches = (result[0].matches).split('"');
+      for(var i=0; i < matches.length; i++){
+        if (!matches[i].match(alnum)){
+          matches.splice(i, 1);
+        }
+      }
+      matches.splice(0, 1);
+      res.json(matches);
+    });
   });
 });
 

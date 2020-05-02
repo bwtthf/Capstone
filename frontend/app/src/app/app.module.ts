@@ -16,7 +16,7 @@ import { AngularFirestoreModule } from '@angular/fire/firestore'
 
 import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
 import {HttpClientModule} from '@angular/common/http'
-const config: SocketIoConfig = { url: 'http://localhost:3001', options: {} };
+const config: SocketIoConfig = { url: 'http://ec2-13-59-42-62.us-east-2.compute.amazonaws.com:3001', options: {} };
 
 @NgModule({
   declarations: [AppComponent],

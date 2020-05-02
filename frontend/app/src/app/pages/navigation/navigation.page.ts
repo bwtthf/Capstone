@@ -23,13 +23,13 @@ export class NavigationPage implements OnInit {
   }
 
   pushMatches() {
-    this.nav.navigateForward(`/matches/${this.userid}`)
+    this.nav.navigateForward(`/matches`)
   }
   pushRecommendations() {
-    this.nav.navigateForward(`/reccomendations/${this.userid}`)
+    this.nav.navigateForward(`/reccomendations`)
   }
   pushMessage() {
-    this.nav.navigateForward(`/message-navigation/${this.userid}`)
+    this.nav.navigateForward(`/message-navigation`)
   }
 
   SignOut() {

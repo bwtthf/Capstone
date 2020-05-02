@@ -2,6 +2,8 @@ let app = require('express')();
 let server = require('http').createServer(app);
 let io = require('socket.io')(server);
 
+//io.origins('*:*');
+console.log(io);
 io.on('connection', (socket) => {
  
   socket.on('disconnect', function(){
@@ -20,8 +22,7 @@ io.on('connection', (socket) => {
  
 var port = process.env.PORT || 3001;
  
+//server.listen(port, 'http://ec2-13-59-42-62.us-east-2.compute.amazonaws.com');
 server.listen(port, function(){
    console.log('listening in http://localhost:' + port);
 });
-
- 

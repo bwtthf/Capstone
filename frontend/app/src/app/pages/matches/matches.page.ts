@@ -23,7 +23,7 @@ export class MatchesPage implements OnInit {
 
     this.userid = this.activatedRoute.snapshot.paramMap.get('userid')
 
-    this.http.get('http://localhost:8888/matches').subscribe(data => {
+    this.http.get('http://ec2-13-59-42-62.us-east-2.compute.amazonaws.com:8888/matches').subscribe(data => {
       var alnum = /^[0-9a-zA-Z]+$/;
       let topFive = new Map<string, string>();
       var i = 0;

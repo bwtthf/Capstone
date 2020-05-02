@@ -1,16 +1,15 @@
 <ion-header>
-  <ion-button class="float" (click)="SignOut()">Logout</ion-button>
+  <ion-button class="float" (click)="SignOut()" color='dark'>Logout</ion-button>
   <ion-toolbar>
     <div>
       <ion-title>Home</ion-title>
     </div>
-  </ion-toolbar>
-  
+  </ion-toolbar>  
 </ion-header>
 
 <ion-content>
-<ion-button class="butt" href='http://localhost:8888/login'>Link Spotify</ion-button>
-<ion-button class="butt" (click)="pushRecommendations() ">Recommended Songs</ion-button>
-<ion-button class="butt" (click)='pushMatches()'>Matches</ion-button>
-<ion-button class="butt" (click)="pushMessage()">Message Matches</ion-button>
+<ion-button class="butt" href='http://localhost:8888/login' color='dark'>Link Spotify</ion-button>
+<ion-button class="butt" (click)="pushRecommendations() " color='dark'>Recommended Songs</ion-button>
+<ion-button class="butt" (click)='pushMatches()' color='dark'>Matches</ion-button>
+<ion-button class="butt" (click)="pushMessage()" color='dark'>Message Matches</ion-button>
 </ion-content>

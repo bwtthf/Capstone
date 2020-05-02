@@ -7,11 +7,28 @@
 
 <ion-content>
 
-  
   <ion-list>
-    <ion-item >
-      {{topfive[1]}}
-    </ion-item>
+    <ion-button color ='dark' class='butt' routerLink='/messaging'>Match: {{matches[0]}}</ion-button>
+    <ion-item>Top 3 songs:</ion-item>
   </ion-list>
+  <ion-list *ngFor='let matche of firstmatch'>
+    <ion-item>{{matche}}</ion-item>
+ </ion-list>
+
+ <ion-list>
+  <ion-button color ='dark' class='butt' routerLink='/messaging'>Match: {{matches[1]}}</ion-button>
+  <ion-item>Top 3 songs:</ion-item>
+</ion-list>
+  <ion-list *ngFor='let matche of secondmatch'>
+    <ion-item>{{matche}}</ion-item>
+ </ion-list>
+
+ <ion-list>
+  <ion-button color ='dark' class='butt' routerLink='/messaging'>Match: {{matches[2]}}</ion-button>
+  <ion-item>Top 3 songs:</ion-item>
+</ion-list>
+  <ion-list *ngFor='let matche of thirdmatch'>
+    <ion-item>{{matche}}</ion-item>
+ </ion-list>
 
 </ion-content>

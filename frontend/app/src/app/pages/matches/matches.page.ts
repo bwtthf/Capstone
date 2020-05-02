@@ -12,6 +12,9 @@ export class MatchesPage implements OnInit {
   userid = null;
   matches = [];
   topfive = [];
+  firstmatch = [];
+  secondmatch = [];
+  thirdmatch = [];
 
   constructor(public activatedRoute: ActivatedRoute,
     private http: HttpClient) { }
@@ -45,14 +48,39 @@ export class MatchesPage implements OnInit {
             songs.splice(i, 1);
           }
         }
-
-        console.log(top);
+        this.topfive = this.topfive.concat(songs);
+        console.log(this.topfive);
         // array of artists & songs, songs[0] => songs[1], etc.
         //remember that this is inside the forEach loop, so songs is logged for each matched user
         //console.log(songs);
 
       });
-      this.topfive = top;
+      //this.topfive = Array.from(this.topfive[0],this.topfive[1]);
+      this.firstmatch = [
+        'Artist: ' + this.topfive[0] +
+        '  |  Song: ' + this.topfive[1],
+        'Artist: ' + this.topfive[2] +
+        '  |  Song: ' + this.topfive[3],
+        'Artist: ' + this.topfive[4] +
+        '  |  Song: ' + this.topfive[5],
+      ];
+      this.secondmatch = [
+        'Artist: ' + this.topfive[10] +
+        '  |  Song: ' + this.topfive[11],
+        'Artist: ' + this.topfive[12] +
+        '  |  Song: ' + this.topfive[13],
+        'Artist: ' + this.topfive[14] +
+        '  |  Song: ' + this.topfive[15],
+      ];
+      this.thirdmatch = [
+        'Artist: ' + this.topfive[20] +
+        '  |  Song: ' + this.topfive[21],
+        'Artist: ' + this.topfive[22] +
+        '  |  Song: ' + this.topfive[23],
+        'Artist: ' + this.topfive[24] +
+        '  |  Song: ' + this.topfive[25]
+      ];
+      //this.topfive = top;
     });
   }
 

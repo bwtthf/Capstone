@@ -36,7 +36,7 @@ export class LoginPage implements OnInit {
 	try {
 		// bypassing email by just adding @gmail.com to the end 
 		const res = await this.afAuth.signInWithEmailAndPassword(username + '@gmail.com', password)
-		this.router.navigate([`/navigation/${this.username}`])
+		this.router.navigate([`/navigation`])
 	
 	} catch(err) {
 		this.presentAlert("Error!", "Username or Password is incorrect")

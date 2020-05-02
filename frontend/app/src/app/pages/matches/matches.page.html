@@ -1,5 +1,5 @@
 <ion-header>
-  <ion-back-button class='float' routerLink="/navigation"></ion-back-button>
+  <ion-back-button class='float' routerLink="/navigation/h"></ion-back-button>
   <ion-toolbar>
     <ion-title>Matches</ion-title>
   </ion-toolbar>
@@ -7,66 +7,30 @@
 
 <ion-content>
 
-<ion-item color='dark'>
-  <ion-label>Match 1:</ion-label>
-  <ion-label>vicalexis94</ion-label>
-  </ion-item>
-  <ion-label>Top 5:</ion-label>
-  <ion-item>
-  <ion-label class='float'>1.Disq: Neglect (Wondering)</ion-label>
-</ion-item>
-<ion-item>
-  <ion-label class='float'>2.Snail Mail: Full Control</ion-label>
-</ion-item>
-<ion-item>
-  <ion-label class='float'>3.Banes World: Drowsy</ion-label>
-</ion-item>
-<ion-item>
-  <ion-label class='float'>4.Soccer Mommy: Flaw</ion-label>
-</ion-item>
-<ion-item>
-  <ion-label class='float'>5.Lunar Vacation: Swimming</ion-label>
-</ion-item>
+  <ion-list>
+    <ion-button color ='dark' class='butt' routerLink='/messaging'>Match: {{matches[0]}}</ion-button>
+    <ion-item>Top 3 songs:</ion-item>
+  </ion-list>
+  <ion-list *ngFor='let matche of firstmatch'>
+    <ion-item>{{matche}}</ion-item>
+ </ion-list>
 
-<ion-item color='dark'>
-  <ion-label>Match 2:</ion-label>
-  <ion-label>Tim</ion-label>
-  </ion-item>
-  <ion-label>Top 5:</ion-label>
-  <ion-item>
-  <ion-label class='float'>1.Drake: God's Plan"</ion-label>
-</ion-item>
-<ion-item>
-  <ion-label class='float'>2.Migos: T-Shirt</ion-label>
-</ion-item>
-<ion-item>
-  <ion-label class='float'>3.Post Malone: Better Now</ion-label>
-</ion-item>
-<ion-item>
-  <ion-label class='float'>4.Lil Uzi Vert: XO Tour Llif3</ion-label>
-</ion-item>
-<ion-item>
-  <ion-label class='float'>5.Travis Scott: goosebumps</ion-label>
-</ion-item>
 
-<ion-content>
-  <ion-item color='dark'>
-  <ion-label>Match 3:</ion-label>
-  <ion-label>Tommy</ion-label>
-  </ion-item>
-  <ion-label>Top 5:</ion-label>
-  <ion-item>
-  <ion-label class='float'>1.Good Kid: Atlas</ion-label>
-</ion-item>
-<ion-item>
-  <ion-label class='float'>2.Movements: Daylily</ion-label>
-</ion-item>
-<ion-item>
-  <ion-label class='float'>3.Ivory Hours: Warpaint</ion-label>
-</ion-item>
-<ion-item>
-  <ion-label class='float'>4.Touché Amoré: Palm Dreams</ion-label>
-</ion-item>
+ <ion-list>
+  <ion-button color ='dark' class='butt' routerLink='/messaging'>Match: {{matches[1]}}</ion-button>
+  <ion-item>Top 3 songs:</ion-item>
+</ion-list>
+  <ion-list *ngFor='let matche of secondmatch'>
+    <ion-item>{{matche}}</ion-item>
+ </ion-list>
 
+  
+ <ion-list>
+  <ion-button color ='dark' class='butt' routerLink='/messaging'>Match: {{matches[2]}}</ion-button>
+  <ion-item>Top 3 songs:</ion-item>
+</ion-list>
+  <ion-list *ngFor='let matche of thirdmatch'>
+    <ion-item>{{matche}}</ion-item>
+ </ion-list>
 
 </ion-content>

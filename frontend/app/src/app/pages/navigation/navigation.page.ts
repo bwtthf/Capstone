@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth'
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
+import { NavController } from '@ionic/angular';
 
 @Component({
   selector: 'app-navigation',
@@ -9,11 +10,26 @@ import { Router } from '@angular/router';
 })
 export class NavigationPage implements OnInit {
 
+  userid = null;
+
   constructor(public afAuth: AngularFireAuth,
-    public router: Router
-    ) { }
+    public router: Router, 
+    public activatedRoute: ActivatedRoute,
+    public nav: NavController) { }  
+
 
   ngOnInit() {
+    this.userid = this.activatedRoute.snapshot.paramMap.get('userid')
+  }
+
+  pushMatches() {
+    this.nav.navigateForward(`/matches/${this.userid}`)
+  }
+  pushRecommendations() {
+    this.nav.navigateForward(`/reccomendations/${this.userid}`)
+  }
+  pushMessage() {
+    this.nav.navigateForward(`/message-navigation/${this.userid}`)
   }
 
   SignOut() {

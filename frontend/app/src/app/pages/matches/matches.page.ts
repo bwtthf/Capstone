@@ -9,11 +9,16 @@ import { HttpClient } from '@angular/common/http';
 })
 export class MatchesPage implements OnInit {
 
+  userid = null;
+  matches = [];
+  topfive = [];
 
   constructor(public activatedRoute: ActivatedRoute,
     private http: HttpClient) { }
 
   ngOnInit() {
+
+    this.userid = this.activatedRoute.snapshot.paramMap.get('userid')
 
     this.http.get('http://localhost:8888/matches').subscribe(data => {
       var alnum = /^[0-9a-zA-Z]+$/;
@@ -27,9 +32,9 @@ export class MatchesPage implements OnInit {
       //console.log(topFive);
       
       // put matches into array
-      var matches = Array.from(topFive.keys());
+      this.matches = Array.from(topFive.keys());
       //can access user's matches in order
-      console.log(matches);
+      console.log(this.matches);
 
       //put topFive into array (same order)
       var top = Array.from(topFive.values());
@@ -40,11 +45,14 @@ export class MatchesPage implements OnInit {
             songs.splice(i, 1);
           }
         }
+
+        console.log(top);
         // array of artists & songs, songs[0] => songs[1], etc.
         //remember that this is inside the forEach loop, so songs is logged for each matched user
-        console.log(songs);
+        //console.log(songs);
+
       });
-      
+      this.topfive = top;
     });
   }
 

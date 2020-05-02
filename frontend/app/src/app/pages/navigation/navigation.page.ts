@@ -25,6 +25,12 @@ export class NavigationPage implements OnInit {
   pushMatches() {
     this.nav.navigateForward(`/matches/${this.userid}`)
   }
+  pushRecommendations() {
+    this.nav.navigateForward(`/reccomendations/${this.userid}`)
+  }
+  pushMessage() {
+    this.nav.navigateForward(`/message-navigation/${this.userid}`)
+  }
 
   SignOut() {
     this.afAuth.signOut();

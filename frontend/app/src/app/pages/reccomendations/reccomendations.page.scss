@@ -1,3 +1,8 @@
 .float {
     float: left;
 }
+
+.k-alt:nth-child(odd) {
+    background: blue;
+    color: blue;
+}

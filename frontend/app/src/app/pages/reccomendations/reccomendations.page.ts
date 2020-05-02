@@ -8,7 +8,9 @@ import { HttpClient } from '@angular/common/http';
 })
 export class ReccomendationsPage implements OnInit {
 
-
+  rec = [];
+  artist = [];
+  songs = [];
 
   constructor(public activatedRoute: ActivatedRoute,
     private http: HttpClient) { }
@@ -41,7 +43,10 @@ export class ReccomendationsPage implements OnInit {
         }
         // array of artists & songs, songs[0] => songs[1], etc.
         //remember that this is inside the forEach loop, so songs is logged for each matched user
-        console.log(songs);
+        this.rec = songs;
+        console.log(this.rec);
+        this.artist = ['Arist: ' + songs[0],'Song: ' + songs[1],'Arist: ' + songs[2],'Song: ' + songs[3],'Arist: ' + songs[4],'Song: ' + songs[5],'Arist: ' + songs[6],'Song: ' + songs[7],'Arist: ' + songs[8],'Song: ' + songs[9]];
+        
       });
       
     });

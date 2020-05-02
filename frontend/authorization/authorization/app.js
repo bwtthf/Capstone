@@ -110,7 +110,7 @@ app.get('/callback', function(req, res) {
         });
         
         // we can also pass the token to the browser to make requests from there
-        res.redirect('http://localhost:8100/navigation/'); //+
+        //res.redirect('http://localhost:8100/navigation/'); //+
         //  querystring.stringify({
         //    access_token: access_token,
         //    refresh_token: refresh_token
@@ -119,6 +119,7 @@ app.get('/callback', function(req, res) {
 
         //wait 200ms for api results
         setTimeout(() => {
+          res.redirect('http://localhost:8100/navigation/' + userID);
           //connection to mysql
           pool.getConnection(function(error, connection){
             if(error) throw error; //not connected
@@ -302,6 +303,25 @@ app.get('/messages', function(req, res){
       }
       matches.splice(0, 1);
       res.json(matches);
+    });
+  });
+});
+
+app.get('/recommendations', function(req, res){
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  var alnum = /^[0-9a-zA-Z]+$/;
+  pool.getConnection(function(error, connection){
+    if(error) throw error; //not connected
+    var sql = 'SELECT recommendations from user WHERE userID = ?'
+    connection.query(sql, [userID], function(error, result){
+      recommendations = (result[0].recommendations).split('"');
+      for(var i=0; i < matches.length; i++){
+        if (!recommendations[i].match(alnum)){
+          recommendations.splice(i, 1);
+        }
+      }
+      recommendations.splice(0, 1);
+      res.json(recommendations);
     });
   });
 });

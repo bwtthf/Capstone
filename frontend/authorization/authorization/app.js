@@ -212,6 +212,7 @@ app.get('/refresh_token', function(req, res) {
 
 app.get('/matches', function(req, res){
   res.setHeader('Access-Control-Allow-Origin', '*');
+  if (userID == 0) return res.end();
   pool.getConnection(function(error, connection){
     if(error) throw error; //not connected
     var matches = []
@@ -240,6 +241,7 @@ app.get('/matches', function(req, res){
           throw err;
         }else{
           res.json(topFive)
+	  connection.release();
         }
     });
       
@@ -250,6 +252,7 @@ app.get('/matches', function(req, res){
 
 app.get('/recommendation', function(req, res){
   res.setHeader('Access-Control-Allow-Origin', '*');
+  if (userID == 0) return res.end();
   pool.getConnection(function(error, connection){
     if(error) throw error; //not connected
     var matches = []
@@ -278,6 +281,7 @@ app.get('/recommendation', function(req, res){
           throw err;
         }else{
           res.json(recs)
+	  connection.release();
         }
     });
       
@@ -288,6 +292,7 @@ app.get('/recommendation', function(req, res){
 
 app.get('/messages', function(req, res){
   res.setHeader('Access-Control-Allow-Origin', '*');
+  if (userID == 0) return res.end();
   var alnum = /^[0-9a-zA-Z]+$/;
   pool.getConnection(function(error, connection){
     if(error) throw error; //not connected
@@ -302,26 +307,14 @@ app.get('/messages', function(req, res){
       matches.splice(0, 1);
       res.json(matches);
     });
+    connection.release();
   });
 });
 
-app.get('/recommendations', function(req, res){
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  var alnum = /^[0-9a-zA-Z]+$/;
-  pool.getConnection(function(error, connection){
-    if(error) throw error; //not connected
-    var sql = 'SELECT recommendations from user WHERE userID = ?'
-    connection.query(sql, [userID], function(error, result){
-      recommendations = (result[0].recommendations).split('"');
-      for(var i=0; i < matches.length; i++){
-        if (!recommendations[i].match(alnum)){
-          recommendations.splice(i, 1);
-        }
-      }
-      recommendations.splice(0, 1);
-      res.json(recommendations);
-    });
-  });
+app.get('/home', function(req, res){
+  userID = 0;
+  res.redirect('http://ec2-13-59-42-62.us-east-2.compute.amazonaws.com:8100/login');
+  console.log('reset userID');
 });
 
 console.log('Listening on 8888');

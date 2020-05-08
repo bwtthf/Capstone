@@ -22,7 +22,7 @@ export class ReccomendationsPage implements OnInit {
   ngOnInit() {
 
     
-    this.http.get('http://ec2-13-59-42-62.us-east-2.compute.amazonaws.com:8888/recommendation').subscribe(data => {
+    this.http.get('http://ec2-13-59-42-62.us-east-2.compute.amazonaws.com:8888/recommendation').subscribe(data => { 
       var alnum = /^[0-9a-zA-Z]+$/;
       let recommendations = new Map<string, string>();
       var i = 0;

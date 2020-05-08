@@ -1,5 +1,5 @@
 <ion-header>
-  <ion-back-button class='float' routerLink="/navigation/h"></ion-back-button>
+  <ion-back-button class='float' routerLink="/navigation"></ion-back-button>
   <ion-toolbar>
     <ion-title>Messaging</ion-title>
   </ion-toolbar>
@@ -41,11 +41,11 @@
   <ion-toolbar color="light">
     <ion-row align-items-center>
       <ion-col size="10">
-        <ion-textarea auto-grow class="message-input" rows="1" [(ngModel)]="message"></ion-textarea>
+        <ion-textarea auto-grow class="message-input" color="primary" rows="1" [(ngModel)]="message"></ion-textarea>
       </ion-col>
       <ion-col size="2">
         <ion-button expand="block" fill="clear" color="primary" [disabled]="message === ''" class="msg-btn"
-          (click)="sendMessage()">
+          (click)="sendMessage()">send
           <ion-icon name="ios-send" slot="icon-only"></ion-icon>
         </ion-button>
       </ion-col>
